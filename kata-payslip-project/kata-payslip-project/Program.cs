@@ -34,7 +34,7 @@ namespace kata_payslip_project
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Welcome to the payslip generator!");
+            Console.WriteLine("Welcome to the payslip generator!\r\n");
 
             _userInformationParser.PromptPayslipInformation(_userInputInformation);
 

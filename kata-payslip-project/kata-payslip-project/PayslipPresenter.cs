@@ -16,7 +16,7 @@ namespace kata_payslip_project
         
         public void PresentPayslip(PayslipInformation payslipInformation)
         {
-            Console.WriteLine("Your payslip has been generated");
+            Console.WriteLine("\r\nYour payslip has been generated\r\n");
             
             Console.WriteLine("Name: " + payslipInformation.Fullname);
             
@@ -32,7 +32,7 @@ namespace kata_payslip_project
             
             Console.WriteLine("Net Income: " + payslipInformation.NetIncome);
             
-            Console.WriteLine("Super: " + payslipInformation.Super);
+            Console.WriteLine("Super: " + payslipInformation.Super + "\r\n");
         }
     }
 }
