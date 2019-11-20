@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.FileIO;
 
 namespace kata_payslip_project
 {
@@ -34,14 +38,34 @@ namespace kata_payslip_project
 
         static void Main(string[] args)
         {
+            //ProcessPayslipConsole();
+            
+            ProcessPayslipsCsv("../../../sample_input.csv", "../../../output.csv");
+        }
+
+        public static void ProcessPayslipConsole()
+        {
             Console.WriteLine("Welcome to the payslip generator!\r\n");
 
             _userInformationParser.PromptPayslipInformation(_userInputInformation);
 
             _payslipInformation = _payslipGenerator.GeneratePayslip(_userInputInformation);
 
-            _payslipPresenter.PresentPayslip(_payslipInformation);
+            _payslipPresenter.PresentPayslipConsole(_payslipInformation);
+        }
 
+        public static void ProcessPayslipsCsv(string inputFilepath, string outputFilepath)
+        {
+
+            List<UserInputInformation> userInputList = _userInformationParser.ParseCsvPayslipInformation(inputFilepath);
+            List<PayslipInformation> payslipInformationList = new List<PayslipInformation>();
+
+            foreach (var userInput in userInputList)
+            {
+                payslipInformationList.Add(_payslipGenerator.GeneratePayslip(userInput));
+            }
+
+            _payslipPresenter.PresentPayslipCsv(payslipInformationList, outputFilepath);
         }
         
     }

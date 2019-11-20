@@ -22,9 +22,9 @@ namespace kata_payslip_project
             
             payslipInformation.Fullname = userInputInformation.Name + " " + userInputInformation.Surname;
             
-            payslipInformation.GrossIncome = Convert.ToUInt32(Math.Round(userInputInformation.Salary / 12.0));
+            payslipInformation.GrossIncome = Convert.ToUInt32(Math.Round(userInputInformation.Salary / 12.0)); // Gross income is monthly, so divide by 12
 
-            payslipInformation.IncomeTax = CalculateIncomeTax(payslipInformation.GrossIncome * 12);
+            payslipInformation.IncomeTax = CalculateIncomeTax(payslipInformation.GrossIncome * 12); // Income tax calculated on annual pay, then made monthly within method
 
             payslipInformation.NetIncome = payslipInformation.GrossIncome - payslipInformation.IncomeTax;
 

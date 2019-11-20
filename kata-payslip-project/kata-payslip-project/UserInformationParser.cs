@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Microsoft.VisualBasic.FileIO;
 
 namespace kata_payslip_project
 {
@@ -35,7 +36,7 @@ namespace kata_payslip_project
 
                 TimeSpan span = userInputInformation.PaymentEndDate.Subtract(userInputInformation.PaymentStartDate);
                 
-                if (span.Days >= 27 || span.Days <= 31) // todo check edge cases for this validation
+                if (span.Days >= 27 || span.Days <= 31) // Ensuring time period is monthly
                 {
                     validPaymentPeriod = true;
                 }
@@ -46,6 +47,53 @@ namespace kata_payslip_project
             }
             
 
+        }
+
+        public List<UserInputInformation> ParseCsvPayslipInformation(string filepath)
+        {
+            List<UserInputInformation> userInputList = new List<UserInputInformation>();
+            
+            using (TextFieldParser parser = new TextFieldParser(filepath))
+            {
+                parser.TextFieldType = FieldType.Delimited;
+                parser.SetDelimiters(",");
+
+                parser.ReadFields(); // To skip first lines
+                
+                while (!parser.EndOfData)
+                {
+                    UserInputInformation userInputInformation = new UserInputInformation();
+
+                    //Processing user input
+                    string[] fields = parser.ReadFields();
+
+                    userInputInformation.Name = fields[0];
+                    userInputInformation.Surname = fields[1];
+                    userInputInformation.Salary = uint.Parse(fields[2]);
+                    userInputInformation.SuperRate = uint.Parse(fields[3].Replace("%", ""));
+
+                    var dateInput = fields[4].Split("-");
+                    
+                    var dateInputs = dateInput[0].Split(" ");
+                    dateInputs.ToList().Remove("-");
+                    var dayString = dateInputs[0];
+                    var monthString = dateInputs[1];
+                    var monthInteger = _monthDictionary[FirstCharToUpperCase(monthString)];
+                    var dayInteger = uint.Parse(dayString);
+                    userInputInformation.PaymentStartDate = new DateTime(1, monthInteger, checked((int) dayInteger));
+
+                    dayString = dateInputs[3];
+                    monthString = dateInputs[4];
+                    monthInteger = _monthDictionary[FirstCharToUpperCase(monthString)];
+                    dayInteger = uint.Parse(dayString);
+                    userInputInformation.PaymentEndDate = new DateTime(1, monthInteger, checked((int) dayInteger));
+
+                    userInputList.Add(userInputInformation);
+
+                }
+            }
+
+            return userInputList;
         }
         
         private uint PromptUnsignedInteger(string message){
@@ -108,7 +156,9 @@ namespace kata_payslip_project
             }
         }
         
-        private string FirstCharToUpperCase(string input)
+        
+        
+        public static string FirstCharToUpperCase(string input)
         {
             return input.First().ToString().ToUpper() + input.Substring(1);
         }
